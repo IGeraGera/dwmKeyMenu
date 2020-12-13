@@ -127,5 +127,5 @@ for KEY in "${!MODMAP[@]}"; do
 	KEYBINDINGS=${KEYBINDINGS//$KEY/${MODMAP[$KEY]}}
 done
 # Dmenu
-echo -e "$KEYBINDINGS" | dmenu -c -i -l 20 -p 'Keybindings'
+echo -e "$KEYBINDINGS" | dmenu -c -i -l 20 -p 'Keybindings' > /dev/null
 
