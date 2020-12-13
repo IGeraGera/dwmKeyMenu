@@ -52,4 +52,4 @@ dwmKeyMenu can use dmenu, rofi or whatever you like.
 
 ## ScreenShot 
 
-![Example](Image/main.png)
+![Example](Images/main.png)
