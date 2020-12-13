@@ -18,6 +18,8 @@ The caveat is that config.def.h must be formatted in a certain way but alas, is 
 
 ## How can it read
 
+The config.def.h path is given as an argument to the main.sh.
+
 The final keybinding record is comprised of the Modkeys, the actual key and the Description of the keybinding. The Modkeys get automatically translated to the actual buttons (if they exist) i.e. Super\_L, as they are defined in xmodmap. The decription must be in a formated comment at the end of the line. Note the spaces and the commas between the parts. The Modkeys must be in the 2nd column and the key must be on the 3rd. Columns can be separated with spaces or tabs.
 
 In order to read *plain keybindings* the keybindings must be formatted in the config.def.h file as 
