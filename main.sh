@@ -6,9 +6,9 @@ DMENU_WIDTH=75
 # Getting File name from argument given
 FILE=$1
 # Locate the line that keybindings start
-KEYSBINDSTART=$(awk '/keys\[\]/ {print NR}' $FILE)
+KEYBINDSTART=$(awk '/keys\[\]/ {print NR}' $FILE)
 # Locate the line that keybindings end
-KEYBINDEND=$(awk 'NR>89 && /};/  {print NR;exit}' $FILE)
+KEYBINDEND=$(awk -v START=$KEYBINDSTART 'NR>START && /};/  {print NR;exit}' $FILE)
 # Modkey Number
 MODKEYNUM=$(awk '/define MODKEY/ {$4=tolower($3); $3=substr($3,1,length($3)-4);print $3}' $FILE)
 
@@ -23,7 +23,7 @@ MODMAP["Mod5"]=$(xmodmap | awk '/mod5/ {print $2}')
 # Getting modkey name from xmodmap
 MODKEY=${MODMAP[${MODKEYNUM}]}
 # Extracting Keybindings and description
-KEYBINDINGS=$(awk  -v DMENU_WIDTH=$DMENU_WIDTH -v START=$KEYSBINDSTART -v FINISH=$KEYBINDEND ' 
+KEYBINDINGS=$(awk  -v DMENU_WIDTH=$DMENU_WIDTH -v START=$KEYBINDSTART -v FINISH=$KEYBINDEND ' 
 	# This part extracts keybindings and descriptions from curly braces 
 	NR>=START && NR<=FINISH && /^[\t" "]+{/ {
 
@@ -48,25 +48,25 @@ KEYBINDINGS=$(awk  -v DMENU_WIDTH=$DMENU_WIDTH -v START=$KEYSBINDSTART -v FINISH
 
 	# Printing
 	if (length($2)>4){
-	spaces = (DMENU_WIDTH - length($2 $3 desc) - 3); # Minus because during printing we add " + " characters
+	spaces = (DMENU_WIDTH - length($2 $3 " + " desc));
 	pad = "";
 	for(i=0; i<spaces; i++){
 		pad=pad " ";
 	}
 	print $2 " + " $3 pad desc;}
 	else{
-	spaces=(DMENU_WIDTH-length($3 desc));
+	spaces=(DMENU_WIDTH - length($3 desc));
 	pad = "";
 	for(i=0; i<spaces; i++){
 		pad = pad " ";
 	}
-	print $3 pad  desc;
+	print $3 pad desc;
 	}	
 	
 	}	
 ' $FILE)
 # Capturing to TAGKEYS array which keys use TAGKEYS definition
-TAGKEYS=($(awk  -v DMENU_WIDTH=$DMENU_WIDTH -v START=$KEYSBINDSTART -v FINISH=$KEYBINDEND ' 
+TAGKEYS=($(awk  -v DMENU_WIDTH=$DMENU_WIDTH -v START=$KEYBINDSTART -v FINISH=$KEYBINDEND ' 
 	# This part extracts keybinding and definitions from TAGKEYS definition
 	NR>=START && NE<=FINISH && /^[\t" "]+TAGKEYS/ {
 	# Trim and isolate the key (remove XK_)
@@ -110,7 +110,7 @@ KEYBINDINGS=$KEYBINDINGS"\n"$(awk -v DMENU_WIDTH=$DMENU_WIDTH -v TAGNUM=$TAGNUM 
 		
 	# Print 
 
-	spaces=(DMENU_WIDTH-length($2 " + " TAG desc " TAG[" TAG "]" ));
+	spaces=(DMENU_WIDTH-length($2 " + " TAG desc " TAG[" TAGNUM "]" ));
 	pad="";
 	for(i=0;i<spaces;i++){
 		pad=pad " ";
